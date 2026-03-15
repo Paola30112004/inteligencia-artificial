@@ -8,11 +8,11 @@ const Character = ({ position }) => {
         <capsuleGeometry args={[0.2, 0.4, 4, 8]} />
         <meshStandardMaterial color="#ffccaa" />
       </mesh>
-      
+
       {/* Shirt */}
       <mesh position={[0, -0.05, 0]} castShadow>
         <cylinderGeometry args={[0.21, 0.21, 0.3, 16]} />
-        <meshStandardMaterial color="#ffffff" />
+        <meshStandardMaterial color="#af0707" />
       </mesh>
 
       {/* Blue Cap */}

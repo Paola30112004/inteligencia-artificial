@@ -50,8 +50,8 @@ function App() {
         </div>
       </div>
 
-      <Canvas shadows>
-        <color attach="background" args={['#080816']} />
+      <Canvas shadows alpha>
+
 
         <PerspectiveCamera
           makeDefault
@@ -64,32 +64,32 @@ function App() {
           target={[gridSize / 2, 0, gridSize / 2]}
         />
 
-        <ambientLight intensity={0.3} />
+        <ambientLight intensity={1.5} />
         <directionalLight
           position={[10, 20, 10]}
-          intensity={1.5}
+          intensity={2.5}
           castShadow
           shadow-mapSize={[2048, 2048]}
         />
 
         <Suspense fallback={null}>
           <PlaygroundScene />
-          <Environment preset="night" />
+          <Environment preset="city" />
         </Suspense>
 
         <EffectComposer disableNormalPass>
           <Bloom
-            luminanceThreshold={0.8}
+            luminanceThreshold={1}
             mipmapBlur
-            intensity={2}
-            radius={0.3}
+            intensity={0.5}
+            radius={0.2}
           />
         </EffectComposer>
       </Canvas>
 
       <div className="controls">
         <button onClick={() => window.dispatchEvent(new CustomEvent('reset-path'))}>Reiniciar</button>
-        <button onClick={() => window.dispatchEvent(new CustomEvent('find-path'))} style={{ background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)', color: '#000' }}>Encontrar camino más corto</button>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('find-path'))} style={{ background: '#fc00a0ff', color: '#f2e6e6ff' }}>Encontrar camino más corto</button>
       </div>
     </div>
   )

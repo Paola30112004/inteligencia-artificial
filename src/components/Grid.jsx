@@ -5,7 +5,7 @@ import { Text } from '@react-three/drei'
 const Grid = ({ size = 15, onTileClick }) => {
   const meshRef = useRef()
   const linesRef = useRef()
-  
+
   const tileGeometry = useMemo(() => new THREE.PlaneGeometry(0.95, 0.95), [])
   const lineGeometry = useMemo(() => new THREE.PlaneGeometry(1, 0.05), [])
 
@@ -20,9 +20,9 @@ const Grid = ({ size = 15, onTileClick }) => {
         dummy.rotation.set(-Math.PI / 2, 0, 0)
         dummy.updateMatrix()
         meshRef.current.setMatrixAt(count, dummy.matrix)
-        
+
         // Color variation for checkered pattern
-        const color = (x + y) % 2 === 0 ? new THREE.Color("#1e2a4a") : new THREE.Color("#1a1a3a")
+        const color = (x + y) % 2 === 0 ? new THREE.Color("#62bc56") : new THREE.Color("#06b206")
         meshRef.current.setColorAt(count, color)
         count++
       }
@@ -36,13 +36,13 @@ const Grid = ({ size = 15, onTileClick }) => {
       {/* Base Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[size / 2 - 0.5, -0.01, size / 2 - 0.5]} receiveShadow>
         <planeGeometry args={[size, size]} />
-        <meshStandardMaterial color="#0c0c1e" />
+        <meshStandardMaterial color="#176317" />
       </mesh>
 
       {/* Unified Raycast Plane (More robust for clicks) */}
-      <mesh 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        position={[size / 2 - 0.5, 0.05, size / 2 - 0.5]} 
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[size / 2 - 0.5, 0.05, size / 2 - 0.5]}
         visible={false}
         onPointerDown={(e) => {
           e.stopPropagation()
@@ -57,17 +57,17 @@ const Grid = ({ size = 15, onTileClick }) => {
       </mesh>
 
       {/* Instanced Tiles (Visuals only) */}
-      <instancedMesh 
-        ref={meshRef} 
-        args={[tileGeometry, null, size * size]} 
+      <instancedMesh
+        ref={meshRef}
+        args={[tileGeometry, null, size * size]}
       >
         <meshStandardMaterial transparent opacity={0.6} metalness={0.2} roughness={0.8} />
       </instancedMesh>
 
       {/* Static Grid Lines */}
       <gridHelper 
-        args={[size, size, "#4facfe", "#2a2a4a"]} 
-        position={[size / 2 - 0.5, 0.02, size / 2 - 0.5]} 
+        args={[size, size, "#000000", "#000000"]} 
+        position={[size / 2 - 0.5, 0.05, size / 2 - 0.5]} 
       />
 
       {/* Coordinates (Highly optimized: only for small grids) */}
@@ -78,8 +78,8 @@ const Grid = ({ size = 15, onTileClick }) => {
             position={[x, 0.02, y + 0.35]}
             rotation={[-Math.PI / 2, 0, 0]}
             fontSize={0.1}
-            color="white"
-            fillOpacity={0.1}
+            color="black"
+            fillOpacity={0.3}
           >
             {`${x},${y}`}
           </Text>

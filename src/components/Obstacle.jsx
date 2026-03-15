@@ -4,13 +4,13 @@ import { Float } from '@react-three/drei'
 
 // Geometry definitions for reuse
 const rockGeometry = new THREE.DodecahedronGeometry(0.4, 0);
-const rockMaterial = new THREE.MeshStandardMaterial({ color: "#ff4d4d", roughness: 0.8 });
+const rockMaterial = new THREE.MeshStandardMaterial({ color: "#b6a811", roughness: 0.8 });
 
-const waterMaterial = new THREE.MeshStandardMaterial({ color: "#00f2fe", emissive: "#00f2fe", emissiveIntensity: 0.5, transparent: true, opacity: 0.6 });
+const waterMaterial = new THREE.MeshStandardMaterial({ color: "#11678b", emissive: "#00f2fe", emissiveIntensity: 0.5, transparent: true, opacity: 0.6 });
 const bushGeometry = new THREE.SphereGeometry(0.3, 8, 8);
-const bushMaterial = new THREE.MeshStandardMaterial({ color: "#2d5a27", roughness: 1 });
+const bushMaterial = new THREE.MeshStandardMaterial({ color: "#6c54a7", roughness: 1 });
 
-const ballsMaterial = new THREE.MeshStandardMaterial({ color: "#f093fb" });
+const ballsMaterial = new THREE.MeshStandardMaterial({ color: "#873090" });
 
 const ObstaclesInstances = ({ obstacles, type }) => {
   const ref = useRef()

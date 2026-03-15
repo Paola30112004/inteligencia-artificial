@@ -27,10 +27,10 @@ const NeonPath = ({ path, startNode }) => {
       {/* The main neon line */}
       <mesh>
         <tubeGeometry args={[curve, 64, 0.05, 8, false]} />
-        <meshStandardMaterial 
-          color="#00ffff" 
-          emissive="#00ffff" 
-          emissiveIntensity={2} 
+        <meshStandardMaterial
+          color="#ff5500"
+          emissive="#c69100ff"
+          emissiveIntensity={2}
         />
       </mesh>
 
@@ -44,13 +44,13 @@ const NeonPath = ({ path, startNode }) => {
 
 const Arrow = ({ curve, offset }) => {
   const ref = useRef()
-  
+
   useFrame((state) => {
     const time = state.clock.getElapsedTime()
     const t = (offset + time * 0.1) % 1
     const pos = curve.getPointAt(t)
     const tangent = curve.getTangentAt(t)
-    
+
     ref.current.position.copy(pos)
     ref.current.lookAt(pos.clone().add(tangent))
   })
@@ -58,7 +58,7 @@ const Arrow = ({ curve, offset }) => {
   return (
     <mesh ref={ref}>
       <coneGeometry args={[0.1, 0.2, 8]} rotation={[0, 0, -Math.PI / 2]} />
-      <meshBasicMaterial color="#00ffff" />
+      <meshBasicMaterial color="#ffa200" />
     </mesh>
   )
 }
