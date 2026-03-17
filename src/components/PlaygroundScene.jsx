@@ -22,8 +22,8 @@ const PlaygroundScene = () => {
 
     for (let i = 0; i < obstacleCount; i++) {
       // More robust pseudo-random scatter
-      const x = Math.floor((Math.abs(Math.sin(seed + i * 1.5)) * gridSize))
-      const y = Math.floor((Math.abs(Math.cos(seed * i * 2.1)) * gridSize))
+      const x = Math.min(gridSize - 1, Math.floor((Math.abs(Math.sin(seed + i * 1.5)) * gridSize)))
+      const y = Math.min(gridSize - 1, Math.floor((Math.abs(Math.cos(seed * i * 2.1)) * gridSize)))
 
       // Don't place obstacles on start or goal
       if ((x === startPos.x && y === startPos.y) || (x === goalPos.x && y === goalPos.y)) continue
