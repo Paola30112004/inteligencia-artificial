@@ -123,7 +123,7 @@ const PlaygroundScene = () => {
 
   return (
     <group>
-      <Grid size={gridSize} onTileClick={handleTileClick} />
+      <Grid size={gridSize} obstacles={obstacles} onTileClick={handleTileClick} />
 
       <Obstacle obstacles={obstacles} />
 
