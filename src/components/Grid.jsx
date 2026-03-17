@@ -65,9 +65,9 @@ const Grid = ({ size = 15, onTileClick }) => {
       </instancedMesh>
 
       {/* Static Grid Lines */}
-      <gridHelper 
-        args={[size, size, "#000000", "#000000"]} 
-        position={[size / 2 - 0.5, 0.05, size / 2 - 0.5]} 
+      <gridHelper
+        args={[size, size, "#000000", "#000000"]}
+        position={[size / 2 - 0.5, 0.05, size / 2 - 0.5]}
       />
 
       {/* Coordinates (Highly optimized: only for small grids) */}

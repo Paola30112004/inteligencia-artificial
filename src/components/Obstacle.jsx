@@ -1,69 +1,110 @@
 import React, { useMemo, useRef, useEffect } from 'react'
 import * as THREE from 'three'
-import { Float } from '@react-three/drei'
 
-// Geometry definitions for reuse
-const rockGeometry = new THREE.DodecahedronGeometry(0.4, 0);
-const rockMaterial = new THREE.MeshStandardMaterial({ color: "#b6a811", roughness: 0.8 });
+// Flower Component (Dynamic color)
+const Flower = ({ x, y, color }) => {
+  return (
+    <group position={[x, 0.1, y]} scale={[1.3, 1.3, 1.3]}>
+      {/* Stem */}
+      <mesh position={[0, 0.1, 0]} castShadow>
+        <cylinderGeometry args={[0.025, 0.025, 0.25]} />
+        <meshStandardMaterial color="#2d5a27" />
+      </mesh>
+      {/* Center */}
+      <mesh position={[0, 0.3, 0]} castShadow>
+        <sphereGeometry args={[0.1, 8, 8]} />
+        <meshStandardMaterial color="#5c3c10" />
+      </mesh>
+      {/* Petals */}
+      {[0, 1, 2, 3, 4].map((i) => (
+        <mesh
+          key={i}
+          position={[
+            Math.cos((i * Math.PI * 2) / 5) * 0.15,
+            0.3,
+            Math.sin((i * Math.PI * 2) / 5) * 0.15
+          ]}
+          castShadow
+        >
+          <sphereGeometry args={[0.09, 8, 8]} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
 
-const waterMaterial = new THREE.MeshStandardMaterial({ color: "#11678b", emissive: "#00f2fe", emissiveIntensity: 0.5, transparent: true, opacity: 0.6 });
-const bushGeometry = new THREE.SphereGeometry(0.3, 8, 8);
-const bushMaterial = new THREE.MeshStandardMaterial({ color: "#6c54a7", roughness: 1 });
+// Tree Component
+const Tree = ({ x, y }) => {
+  return (
+    <group position={[x, 0, y]} scale={[1.8, 1.8, 1.8]}>
+      {/* Trunk */}
+      <mesh position={[0, 0.25, 0]} castShadow>
+        <cylinderGeometry args={[0.08, 0.12, 0.5]} />
+        <meshStandardMaterial color="#4d2911" />
+      </mesh>
+      {/* Leaves */}
+      <mesh position={[0, 0.6, 0]} castShadow>
+        <coneGeometry args={[0.35, 0.8, 8]} />
+        <meshStandardMaterial color="#1b4d1b" />
+      </mesh>
+      <mesh position={[0, 0.9, 0]} castShadow>
+        <coneGeometry args={[0.25, 0.6, 8]} />
+        <meshStandardMaterial color="#2d5a27" />
+      </mesh>
+    </group>
+  )
+}
 
-const ballsMaterial = new THREE.MeshStandardMaterial({ color: "#873090" });
-
-const ObstaclesInstances = ({ obstacles, type }) => {
+const WaterInstances = ({ obstacles }) => {
   const ref = useRef()
-  const typedObstacles = useMemo(() => obstacles.filter(o => o.type === type), [obstacles, type])
+  const waterObstacles = useMemo(() => obstacles.filter(o => o.type === 'water'), [obstacles])
 
   useEffect(() => {
     if (!ref.current) return
     const dummy = new THREE.Object3D()
-    typedObstacles.forEach((obs, i) => {
-      dummy.position.set(obs.x, type === 'water' ? 0.05 : 0.4, obs.y)
+    waterObstacles.forEach((obs, i) => {
+      dummy.position.set(obs.x, 0.05, obs.y)
       dummy.updateMatrix()
       ref.current.setMatrixAt(i, dummy.matrix)
     })
     ref.current.instanceMatrix.needsUpdate = true
-  }, [typedObstacles, type])
+  }, [waterObstacles])
 
-  if (typedObstacles.length === 0) return null
+  if (waterObstacles.length === 0) return null
 
-  let geometry = type === 'rock' ? rockGeometry : bushGeometry
-  let material = type === 'rock' ? rockMaterial : bushMaterial
-
-  if (type === 'water') {
-    return (
-      <instancedMesh ref={ref} args={[new THREE.BoxGeometry(1, 0.1, 1), waterMaterial, typedObstacles.length]} receiveShadow />
-    )
-  }
+  const waterMaterial = new THREE.MeshStandardMaterial({
+    color: "#11678b",
+    emissive: "#00f2fe",
+    emissiveIntensity: 0.5,
+    transparent: true,
+    opacity: 0.6
+  });
 
   return (
-    <instancedMesh ref={ref} args={[geometry, material, typedObstacles.length]} castShadow />
+    <instancedMesh ref={ref} args={[new THREE.BoxGeometry(1, 0.1, 1), waterMaterial, waterObstacles.length]} receiveShadow />
   )
 }
 
-// Bouncy balls need individual Float components, so they are kept separate but optimized
-const BouncyBall = ({ x, y }) => (
-  <group position={[x, 0.3, y]}>
-    <mesh castShadow>
-      <sphereGeometry args={[0.2, 12, 12]} />
-      <meshStandardMaterial color="#f093fb" />
-    </mesh>
-  </group>
-)
-
 const Obstacles = ({ obstacles }) => {
-  const ballObstacles = useMemo(() => obstacles.filter(o => o.type === 'balls'), [obstacles])
+  const yellowFlowers = useMemo(() => obstacles.filter(o => o.type === 'rock'), [obstacles])
+  const pinkFlowers = useMemo(() => obstacles.filter(o => o.type === 'balls'), [obstacles])
+  const trees = useMemo(() => obstacles.filter(o => o.type === 'bush'), [obstacles])
 
   return (
     <group>
-      <ObstaclesInstances obstacles={obstacles} type="rock" />
-      <ObstaclesInstances obstacles={obstacles} type="bush" />
-      <ObstaclesInstances obstacles={obstacles} type="water" />
+      <WaterInstances obstacles={obstacles} />
 
-      {ballObstacles.map((obs, i) => (
-        <BouncyBall key={`${obs.x}-${obs.y}-${i}`} x={obs.x} y={obs.y} />
+      {yellowFlowers.map((obs, i) => (
+        <Flower key={`yellow-${i}`} x={obs.x} y={obs.y} color="#ffeb3b" />
+      ))}
+
+      {pinkFlowers.map((obs, i) => (
+        <Flower key={`pink-${i}`} x={obs.x} y={obs.y} color="#f093fb" />
+      ))}
+
+      {trees.map((obs, i) => (
+        <Tree key={`tree-${i}`} x={obs.x} y={obs.y} />
       ))}
     </group>
   )

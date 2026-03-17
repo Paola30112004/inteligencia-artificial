@@ -1,57 +1,62 @@
-import React, { useRef, useMemo } from 'react'
+import React, { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Float, Points, PointMaterial } from '@react-three/drei'
+import { Float, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 
 const CandyGoal = ({ position }) => {
-  const pointsRef = useRef()
+  const candyRef = useRef()
 
   useFrame((state) => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y += 0.01
+    if (candyRef.current) {
+      candyRef.current.rotation.y += 0.02
     }
   })
 
-  const candyPositions = useMemo(() => {
-    const pos = []
-    for (let i = 0; i < 50; i++) {
-      pos.push(
-        (Math.random() - 0.5) * 0.6,
-        Math.random() * 0.4,
-        (Math.random() - 0.5) * 0.6
-      )
-    }
-    return new Float32Array(pos)
-  }, [])
-
   return (
     <group position={position}>
-      {/* Goal Node Glow */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
-        <circleGeometry args={[0.5, 32]} />
-        <meshStandardMaterial color="#ffff00" emissive="#ffff00" emissiveIntensity={0.5} transparent opacity={0.6} />
+      {/* Goal Node Glow on the floor */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <circleGeometry args={[0.6, 32]} />
+        <meshStandardMaterial
+          color="#ff00ff"
+          emissive="#ff00ff"
+          emissiveIntensity={1}
+          transparent
+          opacity={0.4}
+        />
       </mesh>
-      
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-        {/* Candies as a cloud of points with different colors */}
-        <Points positions={candyPositions} stride={3} ref={pointsRef}>
-          <PointMaterial
-            transparent
-            vertexColors
-            size={0.1}
-            sizeAttenuation={true}
-            depthWrite={false}
-          />
-        </Points>
-        
-        {/* Central candy pile */}
-        <mesh position={[0, 0.2, 0]}>
-          <octahedronGeometry args={[0.3, 0]} />
-          <meshStandardMaterial color="#ff00ff" emissive="#ff00ff" emissiveIntensity={0.5} />
-        </mesh>
+
+      <Float speed={3} rotationIntensity={1} floatIntensity={2}>
+        <group ref={candyRef} position={[0, 0.8, 0]}>
+          {/* Stick */}
+          <mesh position={[0, -0.4, 0]}>
+            <cylinderGeometry args={[0.02, 0.02, 0.8]} />
+            <meshStandardMaterial color="#f0f0f0" roughness={0.3} />
+          </mesh>
+
+          {/* Candy Head - Swirly Lollipop Pattern Effect */}
+          <mesh position={[0, 0, 0]} castShadow>
+            <sphereGeometry args={[0.3, 32, 32]} />
+            <meshStandardMaterial
+              color="#ff0ea1"
+              emissive="#ff0080"
+              emissiveIntensity={0.5}
+              roughness={0.1}
+              metalness={0.5}
+            />
+          </mesh>
+
+          {/* Decorative Ring (Wrapper/Swirl indicator) */}
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.31, 0.02, 16, 100]} />
+            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.8} />
+          </mesh>
+
+          <Sparkles count={20} scale={1.2} size={2} speed={0.4} color="#ff00ff" />
+        </group>
       </Float>
 
-      <pointLight position={[0, 1, 0]} intensity={1} color="#ffff00" />
+      <pointLight position={[0, 1.5, 0]} intensity={2} color="#ff00ff" distance={4} />
     </group>
   )
 }

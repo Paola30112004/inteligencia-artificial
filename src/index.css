@@ -20,7 +20,10 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow: hidden;
-  background-color: #0b92db;
+  background-image: url('./fondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 #root {

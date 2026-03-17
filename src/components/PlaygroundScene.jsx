@@ -17,32 +17,32 @@ const PlaygroundScene = () => {
   const obstacles = useMemo(() => {
     const obs = []
     const seed = gridSize * 123
-    // Increased density factor from 0.8 to 2.5
-    const obstacleCount = Math.floor(gridSize * 2.5)
+    // Increased density factor from 2.5 to 4.5
+    const obstacleCount = Math.floor(gridSize * 4.5)
 
     for (let i = 0; i < obstacleCount; i++) {
-        // More robust pseudo-random scatter
-        const x = Math.floor((Math.abs(Math.sin(seed + i * 1.5)) * gridSize))
-        const y = Math.floor((Math.abs(Math.cos(seed * i * 2.1)) * gridSize))
-        
-        // Don't place obstacles on start or goal
-        if ((x === startPos.x && y === startPos.y) || (x === goalPos.x && y === goalPos.y)) continue
-        // Don't place on adjacent tiles to start/goal for easier start
-        if (Math.abs(x - startPos.x) + Math.abs(y - startPos.y) < 2) continue
-        if (Math.abs(x - goalPos.x) + Math.abs(y - goalPos.y) < 2) continue
+      // More robust pseudo-random scatter
+      const x = Math.floor((Math.abs(Math.sin(seed + i * 1.5)) * gridSize))
+      const y = Math.floor((Math.abs(Math.cos(seed * i * 2.1)) * gridSize))
 
-        const types = ['rock', 'balls', 'water', 'bush']
-        obs.push({ type: types[i % 4], x, y })
+      // Don't place obstacles on start or goal
+      if ((x === startPos.x && y === startPos.y) || (x === goalPos.x && y === goalPos.y)) continue
+      // Don't place on adjacent tiles to start/goal for easier start
+      if (Math.abs(x - startPos.x) + Math.abs(y - startPos.y) < 2) continue
+      if (Math.abs(x - goalPos.x) + Math.abs(y - goalPos.y) < 2) continue
+
+      const types = ['rock', 'balls', 'water', 'bush']
+      obs.push({ type: types[i % 4], x, y })
     }
-    
+
     // Static layout feature (River/Wall)
     const mid = Math.floor(gridSize / 2)
     for (let y = 0; y < Math.floor(gridSize * 0.4); y++) {
-        if (mid !== startPos.x || y !== startPos.y) {
-            obs.push({ type: 'water', x: mid, y })
-        }
+      if (mid !== startPos.x || y !== startPos.y) {
+        obs.push({ type: 'water', x: mid, y })
+      }
     }
-    
+
     return obs
   }, [gridSize, startPos, goalPos])
 
@@ -82,19 +82,19 @@ const PlaygroundScene = () => {
   const handleTileClick = useCallback((x, y) => {
     console.log('Grid clicked at', x, y, 'mode:', interactionMode)
     if (interactionMode === 'start') {
-        setStartPos({ x, y })
+      setStartPos({ x, y })
     } else {
-        setGoalPos({ x, y })
+      setGoalPos({ x, y })
     }
     setPath([])
   }, [interactionMode])
 
   useEffect(() => {
     const onGridResize = (e) => {
-        setGridSize(e.detail.size)
-        setStartPos({ x: 0, y: 0 })
-        setGoalPos({ x: e.detail.size - 1, y: e.detail.size - 1 })
-        setPath([])
+      setGridSize(e.detail.size)
+      setStartPos({ x: 0, y: 0 })
+      setGoalPos({ x: e.detail.size - 1, y: e.detail.size - 1 })
+      setPath([])
     }
     const onModeChange = (e) => setInteractionMode(e.detail.mode)
 
@@ -114,11 +114,11 @@ const PlaygroundScene = () => {
   return (
     <group>
       <Grid size={gridSize} onTileClick={handleTileClick} />
-      
+
       <Obstacle obstacles={obstacles} />
 
       <CandyGoal position={[goalPos.x, 0, goalPos.y]} />
-      
+
       <Character position={[startPos.x, 0, startPos.y]} />
 
       {path.length > 0 && <NeonPath path={path} startNode={startPos} />}
