@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
@@ -8,10 +8,12 @@ import './index.css'
 function App() {
   const [gridSize, setGridSize] = useState(15)
   const [mode, setMode] = useState('goal') // 'start' or 'goal'
+  const [metrics, setMetrics] = useState(null)
 
   const handleSizeChange = (e) => {
     const size = parseInt(e.target.value)
     setGridSize(size)
+    setMetrics(null)
     window.dispatchEvent(new CustomEvent('resize-grid', { detail: { size } }))
   }
 
@@ -20,11 +22,24 @@ function App() {
     window.dispatchEvent(new CustomEvent('change-mode', { detail: { mode: newMode } }))
   }
 
+  useEffect(() => {
+    const onMetrics = (e) => setMetrics(e.detail)
+    const onReset = () => setMetrics(null)
+    window.addEventListener('path-metrics', onMetrics)
+    window.addEventListener('reset-path', onReset)
+    window.addEventListener('resize-grid', onReset)
+    return () => {
+      window.removeEventListener('path-metrics', onMetrics)
+      window.removeEventListener('reset-path', onReset)
+      window.removeEventListener('resize-grid', onReset)
+    }
+  }, [])
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <div className="ui-overlay" style={{ pointerEvents: 'auto' }}>
         <h1 className="ui-title">Camino más corto</h1>
-        <p className="ui-desc">Mueve el niño o los caramelos haciendo clic! Ajusta el tamaño del patio de recreo a continuación.</p>
+        <p className="ui-desc">Mueve el niño o el dulce haciendo clic! Ajusta el tamaño del patio de recreo a continuación.</p>
 
         <div className="ui-group">
           <label>Tamaño de la cuadrícula: {gridSize}x{gridSize}</label>
@@ -45,9 +60,22 @@ function App() {
             <button
               className={mode === 'goal' ? 'active' : ''}
               onClick={() => handleModeChange('goal')}
-            >Caramelos</button>
+            >Dulce</button>
           </div>
         </div>
+
+        {metrics && (
+          <div className="ui-metrics">
+            <div className="metric-item">
+              <span className="metric-label">Tiempo de búsqueda</span>
+              <span className="metric-value">{metrics.time}ms</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-label">Casillas recorridas</span>
+              <span className="metric-value">{metrics.steps}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <Canvas shadows alpha>

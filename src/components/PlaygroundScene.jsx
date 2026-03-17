@@ -70,7 +70,17 @@ const PlaygroundScene = () => {
 
   const handleFindPath = useCallback(() => {
     if (grid.length > 0) {
+      const startTime = performance.now()
       const result = aStar(grid[startPos.x][startPos.y], grid[goalPos.x][goalPos.y], grid)
+      const endTime = performance.now()
+
+      window.dispatchEvent(new CustomEvent('path-metrics', { 
+        detail: { 
+          time: (endTime - startTime).toFixed(4),
+          steps: result.length
+        } 
+      }))
+      
       setPath(result)
     }
   }, [grid, startPos, goalPos])
